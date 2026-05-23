@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="es" class="h-full bg-[#09090b]">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard de Inteligencia Microeconómica - Feria Eureka 2026</title>
+    
+    <!-- Google Fonts Integration -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        display: ['"Space Grotesk"', 'sans-serif'],
+                        mono: ['"JetBrains Mono"', 'monospace'],
+                    },
+                    colors: {
+                        brand: {
+                            dark: '#09090b',
+                            card: '#141417',
+                            border: '#27272a',
+                            accent: '#10b981',
+                            muted: '#a1a1aa'
+                        }
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Chart.js via CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #09090b;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #27272a;
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #10b981;
+        }
+    </style>
+</head>
+<body class="font-sans text-zinc-100 bg-brand-dark min-h-full selection:bg-brand-accent selection:text-brand-dark antialiased overflow-x-hidden">
+
+    <!-- SCREEN 1: WELCOME SCREEN (CON IMAGEN DE FONDO "FONDO" DE FORMA BORROSA Y AMPLIADA) -->
+    <div id="welcomeScreen" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-[#09090b] px-4 transition-all duration-700 transform scale-100 opacity-100">
+        <!-- Imagen de Portada Ampliada y Borrosa por detrás del título -->
+        <img src="fondo.jpeg" alt="Fondo Portada" class="absolute inset-0 w-full h-full object-cover opacity-25 blur-md scale-110 pointer-events-none mix-blend-screen transition-opacity duration-500" onerror="repairImage(this)">
+        
+        <!-- Abstract Animated Grid Overlay -->
+        <div class="absolute inset-0 bg-[linear-gradient(to_right,#141417_1px,transparent_1px),linear-gradient(to_bottom,#141417_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)]"></div>
+        <div class="absolute w-[30rem] h-[30rem] bg-brand-accent/5 rounded-full blur-[120px] top-1/4 left-1/4 animate-pulse-slow"></div>
+
+        <div class="relative max-w-3xl text-center space-y-8 z-10 opacity-0 translate-y-4 transition-all duration-1000 delay-100" id="welcomeText">
+            <div class="inline-flex items-center gap-2 border border-brand-border bg-zinc-900/90 px-4 py-1.5 rounded-full text-xs font-mono tracking-widest text-brand-accent uppercase">
+                <span class="w-2 h-2 rounded-full bg-brand-accent animate-ping"></span>
+                Feria Eureka 2026
+            </div>
+            
+            <h1 class="font-display text-5xl sm:text-7xl font-bold tracking-tight text-white leading-tight uppercase">
+                Agroindustrias Catache
+            </h1>
+            
+            <p class="text-zinc-400 text-sm sm:text-base max-w-xl mx-auto leading-relaxed font-light">
+                Panel analítico basado en encuestas locales y precios referenciales de mercado (Retail)
+            </p>
+
+            <div class="pt-4">
+                <button onclick="enterDashboard()" class="group relative px-8 py-3.5 bg-white text-brand-dark font-semibold text-sm rounded-lg transition-all duration-300 transform hover:-translate-y-0.5 shadow-[0_4px_20px_rgba(255,255,255,0.15)] hover:shadow-brand-accent/20 border border-transparent hover:border-brand-accent focus:outline-none font-display">
+                    Ingresar al Tablero de Control
+                    <span class="inline-block transition-transform duration-300 group-hover:translate-x-1 ml-1.5">&rarr;</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- SCREEN 2: MAIN DASHBOARD CONTENT (CON IMAGEN DE FONDO "FONDO_PRINCIPAL" NÍTIDA Y CLARA) -->
+    <div id="dashboardContent" class="hidden opacity-0 scale-95 transition-all duration-700 ease-out max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6 relative z-10">
+        
+        <!-- Contenedor del Fondo de la Pantalla Principal (Completamente nítido con capa oscura controlada para legibilidad) -->
+        <div class="fixed inset-0 z-[-2] pointer-events-none overflow-hidden bg-[#09090b]">
+            <img src="fondo_principal.jpeg" alt="Fondo Principal" class="w-full h-full object-cover filter brightness-[0.25] contrast-[1.05]" onerror="repairImage(this)">
+        </div>
+
+        <!-- 1. BARRA DE NAVEGACIÓN SUPERIOR (ALIANZAS INSTITUCIONALES) -->
+        <header class="border border-brand-border bg-brand-card/90 rounded-xl p-5 shadow-2xl backdrop-blur-md flex flex-col space-y-6">
+            
+            <!-- FILA SUPERIOR: Logos Institucionales -->
+            <div class="flex justify-between items-center w-full border-b border-brand-border/60 pb-4">
+                <!-- Izquierda: Logo Colegio -->
+                <div class="flex items-center gap-3">
+                    <div class="w-16 h-16 sm:w-20 sm:h-20 flex-shrink-0 border border-brand-border rounded-lg bg-zinc-900/50 flex items-center justify-center p-1 overflow-hidden">
+                        <img src="logo_colegio.jpeg" alt="Logo Colegio" class="w-full h-full object-contain" onerror="repairImage(this)">
+                    </div>
+                    <div class="hidden sm:block text-left">
+                        <p class="text-[10px] font-mono text-brand-muted uppercase">Colegio</p>
+                        <p class="text-xs font-semibold text-zinc-300">San Agustín</p>
+                    </div>
+                </div>
+
+                <!-- Centro: Logo MINEDU -->
+                <div class="flex items-center justify-center">
+                    <div class="h-12 w-36 sm:w-44 flex-shrink-0 border border-brand-border rounded-lg bg-zinc-900/50 flex items-center justify-center p-1.5 overflow-hidden">
+                        <img src="logo_minedu.jpeg" alt="Logo MINEDU" class="w-full h-full object-contain" onerror="repairImage(this)">
+                    </div>
+                </div>
+
+                <!-- Derecha: Logo Concurso -->
+                <div class="flex items-center gap-3">
+                    <div class="hidden sm:block text-right">
+                        <p class="text-[10px] font-mono text-brand-muted uppercase">Concurso</p>
+                        <p class="text-xs font-semibold text-zinc-300">Feria Eureka</p>
+                    </div>
+                    <div class="w-16 h-16 sm:w-20 sm:h-20 flex-shrink-0 border border-brand-border rounded-lg bg-zinc-900/50 flex items-center justify-center p-1 overflow-hidden">
+                        <img src="logo_concurso.jpeg" alt="Logo Concurso" class="w-full h-full object-contain" onerror="repairImage(this)">
+                    </div>
+                </div>
+            </div>
+
+            <!-- FILA INFERIOR: Título Corporativo Centralizado y Logo Grande -->
+            <div class="flex flex-col items-center justify-center text-center py-4 space-y-4">
+                <div class="w-24 h-24 flex-shrink-0 border-2 border-brand-border rounded-2xl bg-zinc-900 flex items-center justify-center p-2 overflow-hidden shadow-xl transition-all duration-300 hover:border-brand-accent">
+                    <img src="logo_empresa.jpeg" alt="Logo Empresa Grande" class="w-full h-full object-cover rounded-xl" onerror="repairImage(this)">
+                </div>
+                <div class="space-y-1">
+                    <h1 class="font-display text-4xl sm:text-6xl font-bold tracking-tight text-white uppercase bg-clip-text text-transparent bg-gradient-to-b from-white to-zinc-300">
+                        Agroindustrias Catache
+                    </h1>
+                    <p class="text-xs font-mono text-brand-accent uppercase tracking-widest font-semibold">Modelo Corporativo S.A.A. &bull; Área de Ciencias Sociales</p>
+                </div>
+            </div>
+        </header>
+
+        <!-- 2. DESCRIPCIÓN SIMPLIFICADA -->
+        <section class="border border-brand-border bg-brand-card/80 rounded-xl p-6 backdrop-blur-sm relative overflow-hidden group">
+            <div class="absolute top-0 left-0 w-1 h-full bg-brand-accent"></div>
+            <div class="max-w-4xl">
+                <p class="text-base sm:text-lg text-zinc-300 leading-relaxed font-light">
+                    Esta herramienta evalúa las ganancias que pierden los agricultores al vender su producción directamente en la chacra en comparación con su transformación en derivados industriales listos para el mercado retail. Toda la información ha sido actualizada con pesos reales y marcas líderes del mercado peruano e internacional para reflejar con precisión el valor añadido agroindustrial en Catache, Cajamarca.
+                </p>
+            </div>
+        </section>
+
+        <!-- TWO COLUMN LAYOUT: Simulator & Graph -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            
+            <!-- 3. SIMULADOR DINÁMICO POR PORCIÓN INDUSTRIAL -->
+            <section class="lg:col-span-5 border border-brand-border bg-brand-card/90 rounded-xl p-6 flex flex-col justify-between shadow-lg backdrop-blur-sm">
+                <div>
+                    <div class="flex items-center justify-between border-b border-brand-border pb-4 mb-5">
+                        <h3 class="font-display text-xs font-bold text-white uppercase tracking-wider">Simulador de Retención en Tiempo Real</h3>
+                        <span class="w-2 h-2 rounded-full bg-brand-accent animate-ping"></span>
+                    </div>
+
+                    <!-- Inputs -->
+                    <div class="space-y-4">
+                        <div>
+                            <label for="productSelector" class="block text-xs font-mono text-brand-muted uppercase mb-1.5 font-medium">Especie Biológica</label>
+                            <select id="productSelector" class="w-full bg-zinc-900 border border-brand-border rounded-lg px-3 py-2.5 text-sm text-white focus:outline-none focus:border-brand-accent font-medium cursor-pointer transition-all duration-300">
+                                <!-- Options populated dynamically -->
+                            </select>
+                        </div>
+                        <div>
+                            <label for="volumeInput" class="block text-xs font-mono text-brand-muted uppercase mb-1.5 font-medium">Volumen de Acopio (Kg)</label>
+                            <input type="number" id="volumeInput" value="1000" min="1" step="100" class="w-full bg-zinc-900 border border-brand-border rounded-lg px-3 py-2.5 text-sm font-mono text-white focus:outline-none focus:border-brand-accent transition-all duration-300">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Outputs -->
+                <div class="space-y-3 mt-6">
+                    <!-- Caja 1 -->
+                    <div class="bg-zinc-900/50 border border-brand-border rounded-lg p-3.5">
+                        <p class="text-[10px] font-mono text-brand-muted uppercase tracking-wider">Valor Bruto en Chacra</p>
+                        <p id="outChacra" class="font-mono text-xl font-bold text-red-400 mt-1">S/. 0.00</p>
+                    </div>
+
+                    <!-- Caja 2 -->
+                    <div class="bg-zinc-900/50 border border-brand-border rounded-lg p-3.5">
+                        <p class="text-[10px] font-mono text-brand-muted uppercase tracking-wider">Presentación y Marca Referencial</p>
+                        <p id="outDerivado" class="text-sm font-semibold text-white mt-1 truncate">—</p>
+                        <p id="outPorcion" class="text-xs text-brand-muted font-mono mt-0.5">—</p>
+                    </div>
+
+                    <!-- Caja 3 -->
+                    <div class="bg-zinc-900/90 border border-brand-accent/20 rounded-lg p-4 relative overflow-hidden bg-gradient-to-br from-zinc-900 via-zinc-900 to-brand-accent/[0.02] shadow-md group">
+                        <p class="text-[10px] font-mono text-brand-accent uppercase tracking-widest font-bold">Retención Industrial Efectiva</p>
+                        <p id="outIndustrial" class="font-mono text-2xl font-bold text-brand-accent mt-1">S/. 0.00</p>
+                        <div class="absolute right-3 top-3">
+                            <span id="outMultiplier" class="inline-block text-[10px] font-mono font-bold bg-brand-accent/10 border border-brand-accent/20 text-brand-accent px-2 py-0.5 rounded-md">
+                                0.0x Valor Real
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 4. GRÁFICO ESTADÍSTICO DE RENDIMIENTO -->
+            <section class="lg:col-span-7 border border-brand-border bg-brand-card/90 rounded-xl p-6 shadow-lg flex flex-col justify-between backdrop-blur-sm">
+                <div>
+                    <div class="flex items-center justify-between border-b border-brand-border pb-4 mb-4">
+                        <h3 class="font-display text-xs font-bold text-white uppercase tracking-wider">Márgenes de Optimización por Kilogramo (S/.)</h3>
+                        <span class="text-[10px] font-mono text-brand-muted uppercase tracking-wider">Escala Ascendente</span>
+                    </div>
+                    <div class="relative w-full h-[320px] sm:h-[350px]">
+                        <canvas id="yieldChart"></canvas>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+
+        <!-- 5. MATRIZ DE PRECIOS DETALLADA -->
+        <section class="border border-brand-border bg-brand-card/90 rounded-xl shadow-lg overflow-hidden backdrop-blur-sm">
+            <div class="p-5 border-b border-brand-border">
+                <h3 class="font-display text-xs font-bold text-white uppercase tracking-wider">Matriz Arbitrada de Índices Microeconómicos (Ajustada con Marcas)</h3>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="border-b border-brand-border bg-zinc-900/40 text-[11px] font-mono text-brand-muted uppercase tracking-wider">
+                            <th class="py-3 px-4 font-semibold">Especie Alimento</th>
+                            <th class="py-3 px-4 font-semibold">Derivado Procesado</th>
+                            <th class="py-3 px-4 font-semibold">Marca de Referencia</th>
+                            <th class="py-3 px-4 text-right">Presentación</th>
+                            <th class="py-3 px-4 text-right">PVP Retail</th>
+                            <th class="py-3 px-4 text-right text-red-400">Precio Chacra / Kg</th>
+                            <th class="py-3 px-4 text-right text-brand-accent">Equiv. Industrial / Kg</th>
+                        </tr>
+                    </thead>
+                    <tbody id="matrixTableBody" class="divide-y divide-brand-border/40 text-xs font-medium text-zinc-300">
+                        <!-- Populated dynamically -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- 6. REGISTRO FOTOGRÁFICO DE LAS 10 ESPECIES BIOLÓGICAS -->
+        <section class="space-y-4">
+            <div class="border-b border-brand-border pb-3 flex justify-between items-center">
+                <h3 class="font-display text-xs font-bold text-white uppercase tracking-wider">Catálogo de Especies</h3>
+                <span class="text-[10px] font-mono text-brand-muted uppercase tracking-wider">Haz clic para ver la comparación de biomasa y valor nutricional</span>
+            </div>
+            <div id="photoGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                <!-- 10 dynamic profile cards with crisp, unblurred shared fondo_tarjetas graphics -->
+            </div>
+        </section>
+
+        <!-- Footer Meta -->
+        <footer class="text-center pt-8 border-t border-brand-border/40 text-[10px] font-mono text-brand-muted uppercase tracking-widest">
+            Hecho por JARV &bull; Ciencias Sociales Eureka 2026
+        </footer>
+    </div>
+
+
+    <!-- COMPONENTE MODAL INTERACTIVO AVANZADO: COMPARATIVA INTEGRADA DE BIOMASA -->
+    <div id="nutritionModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-brand-dark/95 backdrop-blur-md opacity-0 pointer-events-none transition-all duration-500">
+        <div class="absolute inset-0" onclick="closeModal()"></div>
+        
+        <div class="relative w-full max-w-5xl bg-brand-card border border-brand-border rounded-2xl overflow-hidden shadow-2xl transform scale-95 transition-all duration-500 flex flex-col justify-between z-10" id="modalContainer">
+            
+            <!-- Top Heading Header -->
+            <div class="p-5 border-b border-brand-border bg-zinc-900/60 flex items-center justify-between">
+                <div>
+                    <span class="text-[10px] font-mono text-brand-accent uppercase tracking-widest font-bold bg-brand-accent/10 border border-brand-accent/20 px-2 py-0.5 rounded">
+                        Trazabilidad de Cadena de Valor & Ficha Bromatológica
+                    </span>
+                    <h4 id="modalFoodName" class="font-display text-2xl font-bold text-white tracking-tight mt-1.5">
+                        —
+                    </h4>
+                </div>
+                <button onclick="closeModal()" class="text-brand-muted hover:text-white border border-brand-border hover:border-zinc-700 bg-zinc-900/50 p-2 rounded-lg transition-all duration-300 focus:outline-none">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
+            </div>
+
+            <!-- Main Interactive Content: 3-Column Split -->
+            <div class="p-6 grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch bg-gradient-to-b from-brand-card to-zinc-950/40">
+                
+                <!-- Left Column: Raw biomas Fruit -->
+                <div class="flex flex-col space-y-2">
+                    <span class="text-[10px] font-mono font-bold text-red-400 uppercase tracking-widest border-b border-brand-border pb-1">
+                        &bull; Fruto Primario (Chacra)
+                    </span>
+                    <div class="w-full aspect-square bg-zinc-900 rounded-xl overflow-hidden border border-brand-border relative">
+                        <img id="modalFrutoImage" src="" alt="Fruto Primario" class="w-full h-full object-cover" onerror="repairImage(this)">
+                    </div>
+                </div>
+
+                <!-- Center Column: Balanced Nutritional Data Sheet -->
+                <div class="flex flex-col justify-between bg-zinc-900/60 border border-brand-border rounded-xl p-5 shadow-inner backdrop-blur-sm">
+                    <div class="space-y-3">
+                        <div class="flex items-center gap-2 border-b border-brand-border/60 pb-2">
+                            <svg class="w-4 h-4 text-brand-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5l2 2h5a2 2 0 012 2v12a2 2 0 01-2 2z"/></svg>
+                            <span class="text-[11px] font-mono font-bold text-zinc-300 uppercase tracking-wider">Perfil Nutricional (100g)</span>
+                        </div>
+                        <p id="modalNutritionText" class="text-zinc-300 text-xs sm:text-sm leading-relaxed font-light font-sans text-justify">
+                            —
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Right Column: Transformed Retail Product -->
+                <div class="flex flex-col space-y-2">
+                    <span class="text-[10px] font-mono font-bold text-brand-accent uppercase tracking-widest border-b border-brand-border pb-1">
+                        &bull; Derivado Industrial (Retail)
+                    </span>
+                    <div class="w-full aspect-square bg-zinc-900 rounded-xl overflow-hidden border border-brand-border relative">
+                        <img id="modalProductoImage" src="" alt="Producto Industrializado" class="w-full h-full object-cover" onerror="repairImage(this)">
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Footer Action Bar -->
+            <div class="p-4 border-t border-brand-border/60 bg-zinc-900/40 flex justify-end">
+                <button onclick="closeModal()" class="px-5 py-2 bg-zinc-900 hover:bg-zinc-800 border border-brand-border text-xs font-mono text-white rounded-md transition-all duration-300">
+                    Cerrar Registro Analítico
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- INTERACTIVE ENGINE & METRIC CALCULATIONS -->
+    <script>
+        // Core Specified Dataset Configuration
+        const dataset = [
+            { 
+                id: "yuca", 
+                name: "Yuca", 
+                derived: "Harina refinada envasada", 
+                brand: "Frutos y Procesos",
+                portion: 500, 
+                pvp: 19.10, 
+                chacra: 3.00,
+                unit: "g",
+                nutrition: "La yuca es un alimento altamente energético debido a su gran contenido de carbohidratos complejos. Por cada 100 gramos aporta aproximadamente 160 calorías, siendo una excelente fuente de energía para actividades físicas y labores agrícolas. Contiene pequeñas cantidades de proteínas y grasas, además de vitamina C y minerales como potasio y magnesio. También aporta fibra, favoreciendo la digestión."
+            },
+            { 
+                id: "naranja", 
+                name: "Naranja", 
+                derived: "Mermelada Pasteurizada", 
+                brand: "La Florencia",
+                portion: 200, 
+                pvp: 4.50, 
+                chacra: 1.66,
+                unit: "g",
+                nutrition: "La naranja destaca por su elevado contenido de vitamina C y antioxidantes naturales. Cada 100 gramos aportan alrededor de 47 calorías y una buena cantidad de agua, lo que la convierte en una fruta hidratante. Sus azúcares naturales proporcionan energía rápida y su fibra ayuda al sistema digestivo y al fortalecimiento del sistema inmunológico."
+            },
+            { 
+                id: "lucuma", 
+                name: "Lúcuma", 
+                derived: "Harina Deshidratada pura", 
+                brand: "Marimiel",
+                portion: 200, 
+                pvp: 19.20, 
+                chacra: 10.00,
+                unit: "g",
+                nutrition: "La lúcuma es una fruta andina con alto valor nutritivo y energético. En 100 gramos contiene aproximadamente 99 calorías, además de carbohidratos naturales, fibra y antioxidantes. Destaca por aportar hierro, calcio y betacarotenos, nutrientes importantes para la producción de energía y el cuidado de la piel y la vista."
+            },
+            { 
+                id: "guanabana", 
+                name: "Guanábana", 
+                derived: "Mermelada Gourmet", 
+                brand: "La Casa",
+                portion: 200, 
+                pvp: 7.50, 
+                chacra: 5.00,
+                unit: "g",
+                nutrition: "La guanábana posee propiedades antioxidantes y un contenido importante de vitamina C. Por cada 100 gramos aporta cerca de 66 calorías. Contiene carbohidratos naturales, fibra y minerales como potasio y magnesio. Su consumo favorece la hidratación y ayuda al funcionamiento del sistema digestivo."
+            },
+            { 
+                id: "ciruela", 
+                name: "Ciruela", 
+                derived: "Fruta Deshidratada Orgánica", 
+                brand: "Made in Nature",
+                portion: 250, 
+                pvp: 15.00, 
+                chacra: 4.00,
+                unit: "g",
+                nutrition: "La ciruela es una fruta rica en fibra y antioxidantes. Cada 100 gramos aportan alrededor de 46 calorías. Ayuda a mejorar la digestión gracias a su contenido de fibra natural y contiene vitamins como la vitamina C y vitamina K. También proporciona pequeñas cantidades de minerales esenciales para el organismo."
+            },
+            { 
+                id: "palta", 
+                name: "Palta", 
+                derived: "Aceite Virgen (Frasco Vidrio)", 
+                brand: "Olivos del Sur",
+                portion: 250, 
+                pvp: 40.64, 
+                chacra: 8.40,
+                unit: "ml",
+                nutrition: "La palta es uno de los alimentos más nutritivos debido a su alto contenido de grasas saludables. Por cada 100 gramos aporta aproximadamente 160 calorías. Contiene ácidos grasos monoinsaturados beneficiosos para el corazón, además de vitamina E, potasio y fibra. Es considerada una fuente importante de energía y nutrición saludable."
+            },
+            { 
+                id: "platano", 
+                name: "Plátano", 
+                derived: "Chifle Dulce de Plátano Maduro", 
+                brand: "Los Chalanes",
+                portion: 150, 
+                pvp: 8.90, 
+                chacra: 4.16,
+                unit: "g",
+                nutrition: "El plátano aporta energía rápida gracias a sus carbohidratos naturales. Cada 100 gramos contienen aproximadamente 89 calorías. Es rico en potasio, mineral importante para el funcionamiento muscular y nervioso. También contiene vitamina B6, vitamina C y fibra dietética que contribuye a la digestión."
+            },
+            { 
+                id: "arracacha", 
+                name: "Arracacha", 
+                derived: "Arracacha en Polvo Orgánica", 
+                brand: "Oxapampa Perú",
+                portion: 1000, 
+                pvp: 52.00, 
+                chacra: 4.00,
+                unit: "g",
+                nutrition: "La arracacha es un tubérculo andino con alto contenido energético y digestibilidad. En 100 gramos aporta cerca de 109 calorías. Contiene carbohidratos complejos, pequeñas cantidades de proteínas y minerales como calcio y fósforo. Además, es una fuente natural de fibra y vitamina C."
+            },
+            { 
+                id: "papa", 
+                name: "Papa", 
+                derived: "Papas Fritas Clásicas Sal", 
+                brand: "LAY'S",
+                portion: 140, 
+                pvp: 4.50, 
+                chacra: 2.00,
+                unit: "g",
+                nutrition: "La papa es uno de los alimentos básicos más importantes por su aporte energético. Cada 100 gramos contienen alrededor de 77 calorías. Es rica en carbohidratos complejos, vitamina C, potasio y fibra. Su bajo contenido de grasa la convierte en una fuente saludable de energía."
+            },
+            { 
+                id: "camote", 
+                name: "Camote", 
+                derived: "Camote Frito Dulce", 
+                brand: "NatuChips",
+                portion: 135, 
+                pvp: 8.00, 
+                chacra: 2.00,
+                unit: "g",
+                nutrition: "El camote destaca por su contenido de betacarotenos, que el cuerpo transforma en vitamina A. Por cada 100 gramos aporta aproximadamente 86 calorías. Además, contiene fibra, vitamina C y antioxidantes naturales que favorecen el sistema inmunológico y la salud visual."
+            }
+        ];
+
+        // Process analytical derived industrial equivalence metrics
+        dataset.forEach(item => {
+            item.industrialEquivalent = (item.pvp / item.portion) * 1000;
+        });
+
+        // Universal Self-Repair Image Core Engine (.jpeg <-> .jpg switch loop)
+        function repairImage(img) {
+            if (!img.dataset.repaired) {
+                img.dataset.repaired = "true";
+                const currentSrc = img.src;
+                if (currentSrc.endsWith('.jpeg')) {
+                    img.src = currentSrc.replace('.jpeg', '.jpg');
+                } else if (currentSrc.endsWith('.jpg')) {
+                    img.src = currentSrc.replace('.jpg', '.jpeg');
+                }
+            }
+        }
+
+        // Init Sequence Animation Trigger for Welcome Screen
+        window.addEventListener('DOMContentLoaded', () => {
+            const txt = document.getElementById('welcomeText');
+            txt.classList.remove('opacity-0', 'translate-y-4');
+        });
+
+        function enterDashboard() {
+            const welcome = document.getElementById('welcomeScreen');
+            const main = document.getElementById('dashboardContent');
+            
+            welcome.classList.add('opacity-0', 'scale-105');
+            setTimeout(() => {
+                welcome.classList.add('hidden');
+                main.classList.remove('hidden');
+                setTimeout(() => {
+                    main.classList.remove('opacity-0', 'scale-95');
+                    main.classList.add('opacity-100', 'scale-100');
+                    initChart();
+                }, 50);
+            }, 650);
+
+            initializeApp();
+        }
+
+        // Global Elements Definition
+        const selector = document.getElementById('productSelector');
+        const volumeInput = document.getElementById('volumeInput');
+        const outChacra = document.getElementById('outChacra');
+        const outDerivado = document.getElementById('outDerivado');
+        const outPorcion = document.getElementById('outPorcion');
+        const outIndustrial = document.getElementById('outIndustrial');
+        const outMultiplier = document.getElementById('outMultiplier');
+        const tableBody = document.getElementById('matrixTableBody');
+        const photoGrid = document.getElementById('photoGrid');
+
+        // Modal Elements Definition
+        const nutritionModal = document.getElementById('nutritionModal');
+        const modalContainer = document.getElementById('modalContainer');
+        const modalFoodName = document.getElementById('modalFoodName');
+        const modalNutritionText = document.getElementById('modalNutritionText');
+        const modalFrutoImage = document.getElementById('modalFrutoImage');
+        const modalProductoImage = document.getElementById('modalProductoImage');
+
+        let yieldChartInstance = null;
+
+        function initializeApp() {
+            if(selector.children.length > 0) return; 
+
+            // Populate Dropdown
+            dataset.forEach(product => {
+                const opt = document.createElement('option');
+                opt.value = product.id;
+                opt.textContent = product.name;
+                selector.appendChild(opt);
+            });
+
+            // Populate Econometric Data Ledger Table
+            dataset.forEach(p => {
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-zinc-900/60 transition-colors duration-200 group";
+                tr.innerHTML = `
+                    <td class="py-3.5 px-4 font-semibold text-white group-hover:text-brand-accent transition-colors">${p.name}</td>
+                    <td class="py-3.5 px-4 text-zinc-400">${p.derived}</td>
+                    <td class="py-3.5 px-4 font-mono text-zinc-300 text-xs">${p.brand}</td>
+                    <td class="py-3.5 px-4 text-right font-mono text-zinc-400">${p.portion}${p.unit}</td>
+                    <td class="py-3.5 px-4 text-right font-mono text-white">S/. ${p.pvp.toFixed(2)}</td>
+                    <td class="py-3.5 px-4 text-right font-mono text-red-400">S/. ${p.chacra.toFixed(2)}</td>
+                    <td class="py-3.5 px-4 text-right font-mono text-brand-accent font-bold">S/. ${p.industrialEquivalent.toFixed(2)}</td>
+                `;
+                tableBody.appendChild(tr);
+            });
+
+            // Populate Photo Catalog
+            dataset.forEach(p => {
+                const card = document.createElement('div');
+                card.className = "border border-brand-border bg-brand-card rounded-xl p-2.5 flex flex-col space-y-2.5 group cursor-pointer shadow-md transition-all duration-500 transform hover:-translate-y-1 hover:border-brand-accent/50 hover:shadow-[0_10px_30px_rgba(16,185,129,0.08)] relative overflow-hidden";
+                card.setAttribute('onclick', `openNutritionModal('${p.id}')`);
+                card.innerHTML = `
+                    <img src="fondo_tarjetas.jpeg" alt="" class="absolute inset-0 w-full h-full object-cover opacity-15 pointer-events-none filter brightness-75 contrast-100" onerror="repairImage(this)">
+                    
+                    <div class="w-full aspect-square bg-zinc-900 rounded-lg overflow-hidden relative z-10 border border-brand-border/40">
+                        <img src="${p.id}.jpeg" alt="${p.name}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" onerror="repairImage(this)">
+                        <div class="absolute inset-0 bg-brand-dark/85 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center p-2 text-center">
+                            <span class="text-[10px] font-mono tracking-widest text-brand-accent border border-brand-accent/20 bg-brand-accent/10 px-2 py-0.5 rounded transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
+                                VER VALOR
+                            </span>
+                        </div>
+                    </div>
+                    <div class="pt-0.5 text-center relative z-10">
+                        <h4 class="text-[11px] font-mono tracking-widest font-bold text-zinc-400 group-hover:text-white uppercase transition-colors truncate">${p.name}</h4>
+                    </div>
+                `;
+                photoGrid.appendChild(card);
+            });
+
+            updateSimulation();
+            selector.addEventListener('change', updateSimulation);
+            volumeInput.addEventListener('input', updateSimulation);
+        }
+
+        function updateSimulation() {
+            const currentProduct = dataset.find(p => p.id === selector.value);
+            let vol = parseFloat(volumeInput.value);
+            if (isNaN(vol) || vol <= 0) vol = 0;
+
+            const totalChacra = vol * currentProduct.chacra;
+            const totalIndustrial = vol * currentProduct.industrialEquivalent;
+            const multiplier = currentProduct.industrialEquivalent / currentProduct.chacra;
+
+            outChacra.textContent = `S/. ${totalChacra.toLocaleString('es-PE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+            outDerivado.textContent = `${currentProduct.derived} (${currentProduct.brand})`;
+            outPorcion.textContent = `Presentación: ${currentProduct.portion}${currentProduct.unit} &bull; PVP Mercado: S/. ${currentProduct.pvp.toFixed(2)}`;
+            outIndustrial.textContent = `S/. ${totalIndustrial.toLocaleString('es-PE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+            outMultiplier.textContent = `${multiplier.toFixed(1)}x Valor Real`;
+        }
+
+        // Modal Component Dynamic Interface Control
+        function openNutritionModal(productId) {
+            const product = dataset.find(p => p.id === productId);
+            if (!product) return;
+
+            delete modalFrutoImage.dataset.repaired;
+            delete modalProductoImage.dataset.repaired;
+
+            modalFoodName.textContent = product.name;
+            modalNutritionText.textContent = product.nutrition;
+
+            modalFrutoImage.src = `${product.id}_fruto.jpeg`;
+            modalProductoImage.src = `${product.id}_producto.jpeg`;
+
+            nutritionModal.classList.remove('pointer-events-none', 'opacity-0');
+            nutritionModal.classList.add('opacity-100');
+            modalContainer.classList.remove('scale-95');
+            modalContainer.classList.add('scale-100');
+        }
+
+        function closeModal() {
+            nutritionModal.classList.remove('opacity-100');
+            nutritionModal.classList.add('opacity-0', 'pointer-events-none');
+            modalContainer.classList.remove('scale-100');
+            modalContainer.classList.add('scale-95');
+        }
+
+        function initChart() {
+            if(yieldChartInstance !== null) return; 
+
+            // Sort Data Arrays ascending
+            const sortedData = [...dataset].sort((a, b) => a.industrialEquivalent - b.industrialEquivalent);
+            
+            const labels = sortedData.map(item => item.name);
+            const chacraPrices = sortedData.map(item => item.chacra);
+            const industrialPrices = sortedData.map(item => item.industrialEquivalent);
+
+            const ctx = document.getElementById('yieldChart').getContext('2d');
+            
+            yieldChartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Precio Chacra (Kg)',
+                            data: chacraPrices,
+                            backgroundColor: 'rgba(239, 68, 68, 0.25)',
+                            borderColor: '#ef4444',
+                            borderWidth: 1.5,
+                            barThickness: 6,
+                            borderRadius: 4
+                        },
+                        {
+                            label: 'Precio Industrial Efectivo (Kg)',
+                            data: industrialPrices,
+                            backgroundColor: 'rgba(16, 185, 129, 0.25)',
+                            borderColor: '#10b981',
+                            borderWidth: 1.5,
+                            barThickness: 6,
+                            borderRadius: 4
+                        }
+                    ]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            labels: {
+                                color: '#e4e4e7',
+                                font: { family: 'Plus Jakarta Sans', size: 10, weight: '500' },
+                                boxWidth: 10,
+                                padding: 15
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: '#141417',
+                            borderColor: '#27272a',
+                            borderWidth: 1,
+                            titleFont: { family: 'Space Grotesk', size: 11 },
+                            bodyFont: { family: 'JetBrains Mono', size: 10 },
+                            padding: 10,
+                            callbacks: {
+                                label: function(context) {
+                                    return ` ${context.dataset.label}: S/. ${context.raw.toFixed(2)}`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: { color: '#27272a', drawBorder: false },
+                            ticks: {
+                                color: '#a1a1aa',
+                                font: { family: 'JetBrains Mono', size: 9 },
+                                callback: value => 'S/. ' + value
+                            }
+                        },
+                        y: {
+                            grid: { display: false },
+                            ticks: {
+                                color: '#e4e4e7',
+                                font: { family: 'Plus Jakarta Sans', size: 10, weight: '500' }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>
